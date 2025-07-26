@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poolpflege Rechner</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .tabs button { padding: 10px; cursor: pointer; margin-right: 5px; }
+    label, input { display: block; margin: 10px 0; }
+    input[type="number"] { width: 100px; }
+    .result { margin-top: 20px; background: #e6ffe6; padding: 10px; border-radius: 5px; }
+    .link { margin-top: 10px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="tabs">
+    <button onclick="showTab('ph-tab')">pH-Wert Rechner</button>
+    <button onclick="showTab('chlor-tab')">Chlor Informationen</button>
+  </div>
+
+  <!-- pH-Wert Rechner -->
+  <div id="ph-tab" class="tab active">
+    <h2>pH-Wert Rechner</h2>
+    <label for="ph-current">Aktueller pH-Wert:</label>
+    <input type="number" id="ph-current" step="0.1" value="7">
+
+    <label for="ph-target">Gewünschter pH-Wert:</label>
+    <input type="number" id="ph-target" step="0.1" value="7.4">
+
+    <label for="volume">Wassermenge (Liter):</label>
+    <input type="number" id="volume" step="0.01" value="7418.25">
+
+    <button onclick="calculateSoda()">Berechnen</button>
+
+    <div class="result" id="soda-result"></div>
+
+    <a class="link" href="https://www.steinbach-group.com/de/poolpflege/einstellung-des-ph-werts/" target="_blank">Mehr über pH-Wert Einstellung</a>
+  </div>
+
+  <!-- Chlor Informationen -->
+  <div id="chlor-tab" class="tab">
+    <h2>Chlor Informationen</h2>
+    <p>
+      Hat man mit der Hilfe entsprechender Mittel den <strong>pH-Wert</strong> gesenkt oder gehoben,
+      und dieser bewegt sich wieder im <strong>idealen Bereich (ca. 7,2)</strong>,
+      wird das Chlor zugegeben. Bei <strong>freiem Chlor</strong> sollte die Menge
+      <strong>zwischen 0,3 und 0,6 mg/Liter Wasser</strong> liegen, bei gebundenem Chlor
+      <strong>höchstens 0,3 mg/Liter</strong>.
+    </p>
+    <p>
+      Hypochlorige Säure ist das eigentliche Desinfektionsmittel im Chlor, das als freies Chlor bezeichnet wird.
+      Gebundenes Chlor hat nur noch eine verminderte Desinfektionswirkung.
+    </p>
+
+    <label for="chlor-dose">Zieldosierung (mg/L):</label>
+    <input type="number" id="chlor-dose" step="0.1" value="0.6">
+
+    <label for="chlor-volume">Wassermenge (Liter):</label>
+    <input type="number" id="chlor-volume" step="0.01" value="7418.25">
+
+    <button onclick="calculateChlor()">Berechnen</button>
+
+    <div class="result" id="chlor-result"></div>
+  </div>
+
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function calculateSoda() {
+      const phCurrent = parseFloat(document.getElementById('ph-current').value);
+      const phTarget = parseFloat(document.getElementById('ph-target').value);
+      const volume = parseFloat(document.getElementById('volume').value);
+
+      const difference = phTarget - phCurrent;
+      const sodaPer1000L = 4.5 * (difference / 0.2); // 4.5g pro 0.2 pH für 1000L
+      const totalSoda = (sodaPer1000L / 1000) * volume;
+
+      document.getElementById('soda-result').innerHTML =
+        `Differenz: ${difference.toFixed(2)}<br>` +
+        `Sodamenge: ${totalSoda.toFixed(2)} g für ${volume.toFixed(2)} Liter Wasser.`;
+    }
+
+    function calculateChlor() {
+      const dose = parseFloat(document.getElementById('chlor-dose').value);
+      const volume = parseFloat(document.getElementById('chlor-volume').value);
+
+      const chlorMenge = (dose / 1000) * volume; // mg to g
+
+      document.getElementById('chlor-result').innerHTML =
+        `Chlordosierung: ${dose.toFixed(2)} mg/L<br>` +
+        `Chlormenge: ${chlorMenge.toFixed(2)} g für ${volume.toFixed(2)} Liter Wasser.`;
+    }
+  </script>
+</body>
+</html>
