@@ -45,6 +45,11 @@
       border-radius: 5px;
       color: white;
       font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .tabs button:hover {
+      background-color: #388e3c;
     }
 
     .tab {
@@ -59,6 +64,7 @@
 
     label {
       margin-top: 15px;
+      display: block;
     }
 
     input[type="number"] {
@@ -88,9 +94,21 @@
       text-decoration: none;
     }
 
-    .info-text {
+    .info-box {
       text-align: center;
       margin-bottom: 20px;
+    }
+
+    .info-content {
+      display: none;
+      text-align: left;
+      margin-top: 10px;
+      animation: fadein 0.4s ease-in-out;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     @media screen and (max-width: 600px) {
@@ -102,25 +120,43 @@
 </head>
 <body>
   <div class="tabs">
-    <button onclick="showTab('ph-tab')">pH-Wert Rechner</button>
-    <button onclick="showTab('chlor-tab')">Chlor Informationen</button>
+    <button onclick="showTab('ph-tab')">🧪 pH-Wert Rechner</button>
+    <button onclick="showTab('chlor-tab')">💧 Chlor Informationen</button>
   </div>
 
   <!-- pH-Wert Rechner -->
   <div id="ph-tab" class="tab active">
     <h2>pH-Wert Rechner</h2>
 
-    <div class="info-text">
-      <p>
-        <strong>pH-Wert regulieren...</strong><br>
-        <br><br>
-        Soda erzeugt einen hohen ph-Wert und eignet sich sehr gut, um einen zu niedrigen (zu sauren) pH-Wert zu erhöhen. Der ideale pH-Level für einen Pool liegt zwischen 7,4 und 7,8.
-        Um den pH-Wert von 1.000 l Wasser um 0,2 pH-Punkte zu erhöhen, brauchen Sie etwa 5 g Soda.
-        <br><br>
-        <strong>1000 Liter:</strong> 4,5g Soda um den pH-Wert um 0,2 zu erhöhen.<br>
-        <strong>40000 Liter:</strong> 180g Soda um den pH-Wert um 0,2 zu erhöhen.<br>
-      </p>
+    <div class="info-box">
+      <button onclick="toggleInfo()">ℹ️ Info anzeigen/ausblenden</button>
+      <div id="infoText" class="info-content">
+        <p>
+          <strong>pH-Wert regulieren...</strong><br>
+          Eine Überprüfung des pH-Wertes sollte ein- bis zweimal die Woche vorgenommen und dokumentiert werden, da sich der pH-Wert aus verschiedensten Gründen schnell verändern kann.
+          <br><br>
+          Soda erzeugt einen hohen pH-Wert und eignet sich sehr gut, um einen zu niedrigen (zu sauren) pH-Wert zu erhöhen. Der ideale pH-Level für einen Pool liegt zwischen 7,4 und 7,8.
+          Um den pH-Wert von 1.000 l Wasser um 0,2 pH-Punkte zu erhöhen, brauchen Sie etwa 5 g Soda.
+          <br><br>
+          Soda kann sich am besten im Pool verteilen, wenn der Pool-Filter eingeschaltet ist (Zirkulation) und das Soda vorher in mindestens 4 l Wasser gelöst wurde.
+          <br><br>
+          <strong>1000 Liter: 4,5g Soda um den pH-Wert um 0,2 zu erhöhen.<br>
+          40000 Liter: 180g Soda um den pH-Wert um 0,2 zu erhöhen.<br>
+          Jährliche Grundreinigung des Beckens</strong><br><br>
+          Sodalauge (in Wasser gelöstes Sodapulver) eignet sich hervorragend zur Reinigung von Kunststoff und Fliesen,
+          ist ein guter Fettlöser und kann auch starke Verschmutzungen reinigen und desinfizieren.
+          Soda bekämpft Algen, Grünspan, Schimmel und Bakterien. Für die Reinigung empfehlen wir 4 – 5%ige Lauge (40 – 50 Gramm Soda / Liter).
+        </p>
+      </div>
     </div>
+
+    <label for="diameter">Pooldurchmesser (cm):</label>
+    <input type="number" id="diameter" step="0.01" value="300">
+
+    <label for="height">Wasserhöhe (cm):</label>
+    <input type="number" id="height" step="0.01" value="100">
+
+    <button onclick="calculateVolume()">Wassermenge berechnen</button>
 
     <label for="ph-current">Aktueller pH-Wert:</label>
     <input type="number" id="ph-current" step="0.1" value="7">
@@ -129,7 +165,7 @@
     <input type="number" id="ph-target" step="0.1" value="7.4">
 
     <label for="volume">Wassermenge (Liter):</label>
-    <input type="number" id="volume" step="0.01" value="7418.25">
+    <input type="number" id="volume" step="0.01" value="7400">
 
     <button onclick="calculateSoda()">Berechnen</button>
 
@@ -141,23 +177,27 @@
   <!-- Chlor Informationen -->
   <div id="chlor-tab" class="tab">
     <h2>Chlor Informationen</h2>
-    <p>
-      Hat man mit der Hilfe entsprechender Mittel den <strong>pH-Wert</strong> gesenkt oder gehoben,
-      und dieser bewegt sich wieder im <strong>idealen Bereich (ca. 7,2)</strong>,
-      wird das Chlor zugegeben. Bei <strong>freiem Chlor</strong> sollte die Menge
-      <strong>zwischen 0,3 und 0,6 mg/Liter Wasser</strong> liegen, bei gebundenem Chlor
-      <strong>höchstens 0,3 mg/Liter</strong>.
-    </p>
-    <p>
-      Hypochlorige Säure ist das eigentliche Desinfektionsmittel im Chlor, das als freies Chlor bezeichnet wird.
-      Gebundenes Chlor hat nur noch eine verminderte Desinfektionswirkung.
-    </p>
+
+    <div class="info-box">
+      <button onclick="toggleChlorInfo()">ℹ️ Info anzeigen/ausblenden</button>
+      <div id="chlorInfoText" class="info-content">
+        <p>
+          Hat man mit der Hilfe entsprechender Mittel den <strong>pH-Wert</strong> gesenkt oder gehoben,
+          und dieser bewegt sich wieder im <strong>idealen Bereich (ca. 7,2)</strong>,
+          wird das Chlor zugegeben. Bei <strong>freiem Chlor</strong> sollte die Menge
+          <strong>zwischen 0,3 und 0,6 mg/Liter Wasser</strong> liegen, bei gebundenem Chlor
+          <strong>höchstens 0,3 mg/Liter</strong>.<br><br>
+          Hypochlorige Säure ist das eigentliche Desinfektionsmittel im Chlor, das als freies Chlor bezeichnet wird.
+          Gebundenes Chlor hat nur noch eine verminderte Desinfektionswirkung.
+        </p>
+      </div>
+    </div>
 
     <label for="chlor-dose">Zieldosierung (mg/L):</label>
     <input type="number" id="chlor-dose" step="0.1" value="0.6">
 
     <label for="chlor-volume">Wassermenge (Liter):</label>
-    <input type="number" id="chlor-volume" step="0.01" value="7418.25">
+    <input type="number" id="chlor-volume" step="0.01" value="7400">
 
     <button onclick="calculateChlor()">Berechnen</button>
 
@@ -168,6 +208,24 @@
     function showTab(tabId) {
       document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
+    }
+
+    function toggleInfo() {
+      const info = document.getElementById('infoText');
+      info.style.display = info.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function toggleChlorInfo() {
+      const info = document.getElementById('chlorInfoText');
+      info.style.display = info.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function calculateVolume() {
+      const diameter = parseFloat(document.getElementById('diameter').value);
+      const height = parseFloat(document.getElementById('height').value);
+      const radius = diameter / 2;
+      const volume = Math.PI * radius * radius * height / 1000;
+      document.getElementById('volume').value = volume.toFixed(2);
     }
 
     function calculateSoda() {
@@ -197,3 +255,4 @@
   </script>
 </body>
 </html>
+
